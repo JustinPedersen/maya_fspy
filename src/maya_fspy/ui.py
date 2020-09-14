@@ -1,3 +1,20 @@
+"""
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+
+Usage:
+    import maya_fspy.ui as mfspy_ui
+    mfspy_ui.maya_fspy_ui()
+
+Note that you will nee to set the correct axes inside of the standalone fspy application for the best results.
+Vanishing point axes:
+    1. -Z
+    2. -X
+Reference distance:
+    Along the y-axis
+"""
+
 from PySide2 import QtCore
 from PySide2 import QtWidgets
 from shiboken2 import wrapInstance
