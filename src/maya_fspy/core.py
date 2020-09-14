@@ -3,9 +3,6 @@ import pprint
 
 import pymel.core as pm
 
-__author__ = 'Justin Pedersen'
-__version__ = '1.0.0'
-
 
 def create_camera_and_plane(json_path, image_path):
     """

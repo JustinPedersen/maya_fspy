@@ -6,7 +6,7 @@ from functools import partial
 import maya.OpenMayaUI as omui
 import pymel.core as pm
 
-import maya_fspy.src.maya_fspy as mfspy
+from .core import create_camera_and_plane
 
 
 __author__ = 'Justin Pedersen'
@@ -82,12 +82,15 @@ class FSpyImporter(QtWidgets.QDialog):
         Main function to generate the camera and image plane from UI.
         """
         if self.json_lineedit and self.image_lineedit:
-            mfspy.create_camera_and_plane(self.json_lineedit.text(), self.image_lineedit.text())
+            create_camera_and_plane(self.json_lineedit.text(), self.image_lineedit.text())
         else:
             pm.warning('Please set a JSON and image path.')
 
 
-if __name__ == "__main__":
+def maya_fspy_ui():
+    """
+    Open the maya fspy ui.
+    """
     try:
         fspy_importer_dialog.close()
         fspy_importer_dialog.deleteLater()
