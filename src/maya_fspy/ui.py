@@ -14,20 +14,19 @@ Vanishing point axes:
 Reference distance:
     Along the y-axis
 """
-
-from PySide2 import QtCore
-from PySide2 import QtWidgets
-from shiboken2 import wrapInstance
+import os
 from functools import partial
 
 import maya.OpenMayaUI as omui
 import pymel.core as pm
+from PySide2 import QtCore
+from PySide2 import QtWidgets
+from shiboken2 import wrapInstance
 
 from .core import create_camera_and_plane
 
-
 __author__ = 'Justin Pedersen'
-__version__ = '1.0.0'
+__version__ = '1.1.0'
 
 
 def maya_main_window():
@@ -90,7 +89,15 @@ class FSpyImporter(QtWidgets.QDialog):
         :param line_edit: The target line edit.
         :param str caption: The window caption.
         """
-        filename = pm.fileDialog2(fileMode=1, caption=caption)
+        # Setting up the dialog filters to only accept what is expected in that field to prevent user error.
+        if line_edit == self.json_lineedit:
+            file_filter = '*.json'
+        else:
+            all_image_formats = ['psd', 'als', 'avi', 'dds', 'gif', 'jpg', 'cin', 'iff', 'exr',
+                                 'png', 'eps', 'yuv', 'hdr', 'tga', 'tif', 'tim', 'bmp', 'xpm']
+            file_filter = 'All Image Files (*.{})'.format(' *.'.join([x for x in all_image_formats]))
+
+        filename = pm.fileDialog2(fileMode=1, caption=caption, fileFilter=file_filter)
         if filename:
             line_edit.setText(filename[0])
 
@@ -98,6 +105,10 @@ class FSpyImporter(QtWidgets.QDialog):
         """
         Main function to generate the camera and image plane from UI.
         """
+        # Making sure no one put a .json file in the JSON field
+        if os.path.splitext(self.json_lineedit.text())[-1].lower() != '.json':
+            return pm.warning('The JSON field only accepts .json file formats')
+
         if self.json_lineedit and self.image_lineedit:
             create_camera_and_plane(self.json_lineedit.text(), self.image_lineedit.text())
         else:
