@@ -22,7 +22,14 @@ mfspy_ui.maya_fspy_ui()
 ```
 
 # Use
-![ui](https://github.com/JustinPedersen/maya_fspy/blob/master/images/ui.png)
+ ### FSPY Application
+ 1. You can find many tutorials online about how to use FSPY, just place the image and configure the perspective lines to your liking. 
+ Make sure to configure the settings correctly. (More on this below)
+ 2. Export Camera settings as json from FSPY, making sure that the file you exported has the `.json` extension. The Maya importer does not accept `.fspy` files like the Blender plugin, it will only accept a `.json` file. 
+ (File/Export/Camera parameters as JSON)
+ 
+ ### Maya
+ ![ui](https://github.com/JustinPedersen/maya_fspy/blob/master/images/ui.png)
  1. Click the json button and navigate to the json file exported from the fspy standalone application.
  2. Click the image button and navigate to the same image used within the fspy application. This image will be used in the image plane.
  3. Hit Import!
