@@ -15,6 +15,7 @@ Reference distance:
     Along the y-axis
 """
 import os
+import platform
 from functools import partial
 
 import maya.OpenMayaUI as omui
@@ -26,7 +27,13 @@ from shiboken2 import wrapInstance
 from .core import create_camera_and_plane
 
 __author__ = 'Justin Pedersen'
-__version__ = '1.1.0'
+__version__ = '1.2.0'
+
+WINDOW_NAME = "Fspy Importer - v{}".format(__version__)
+
+# Python 3 compatibility
+if platform.python_version_tuple()[0] == '3':
+    long = int
 
 
 def maya_main_window():
@@ -37,6 +44,17 @@ def maya_main_window():
     return wrapInstance(long(main_window_ptr), QtWidgets.QWidget)
 
 
+def close_existing_windows():
+    """
+    Close any existing instances of the maya fspy window
+    """
+    for child_window in maya_main_window().children():
+        if hasattr(child_window, 'windowTitle'):
+            if child_window.windowTitle() == WINDOW_NAME:
+                child_window.close()
+                child_window.deleteLater()
+
+
 class FSpyImporter(QtWidgets.QDialog):
     """
     Main UI Class for the importer
@@ -44,7 +62,7 @@ class FSpyImporter(QtWidgets.QDialog):
     def __init__(self, parent=maya_main_window()):
         super(FSpyImporter, self).__init__(parent)
 
-        self.setWindowTitle("Fspy Importer - v{}".format(__version__))
+        self.setWindowTitle(WINDOW_NAME)
         self.setMinimumWidth(300)
         self.setWindowFlags(self.windowFlags() ^ QtCore.Qt.WindowContextHelpButtonHint)
 
@@ -119,11 +137,6 @@ def maya_fspy_ui():
     """
     Open the maya fspy ui.
     """
-    try:
-        fspy_importer_dialog.close()
-        fspy_importer_dialog.deleteLater()
-    except:
-        pass
-
+    close_existing_windows()
     fspy_importer_dialog = FSpyImporter()
     fspy_importer_dialog.show()
