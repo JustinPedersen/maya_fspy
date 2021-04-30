@@ -13,7 +13,7 @@ The below images show fSpy project (top) and a matching Maya camera created by t
 ![Image of maya](https://github.com/JustinPedersen/maya_fspy/blob/master/images/maya_02.png)
 
 # Installing and running
-1. Download the zip file: [maya_fspy_v1.0.0.zip](https://github.com/JustinPedersen/maya_fspy/releases/download/v1.0.0/maya_fspy_v1.0.0.zip)
+1. Download the zip file: [maya_fspy_v1.2.0.zip](https://github.com/JustinPedersen/maya_fspy/releases/download/v1.2.0/maya_fspy.zip)
 2. Unzip it into your Maya scripts folder: `..\Documents\maya\<version>\scripts\maya_fspy`
 3. Paste the following code into the Maya script editor in a Python tab and run, or create a button for easier use: 
 ```python
