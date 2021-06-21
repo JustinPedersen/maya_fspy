@@ -42,7 +42,7 @@ Reference distance: ***Along the y axis***
 
 *See above screenshot of the standalone application if you are not sure.*
 
-## Tested on Maya 2018 + 2019
+## Tested on Maya 2018 -> 2022 (Py2 and Py3)
 If you are able to test on any other maya versions please let me know so I can update it here.
 
 ## Finally
