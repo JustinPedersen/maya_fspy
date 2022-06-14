@@ -19,7 +19,7 @@ import platform
 from functools import partial
 
 import maya.OpenMayaUI as omui
-import pymel.core as pm
+from maya import cmds
 from PySide2 import QtCore
 from PySide2 import QtWidgets
 from shiboken2 import wrapInstance
@@ -27,7 +27,7 @@ from shiboken2 import wrapInstance
 from .core import create_camera_and_plane
 
 __author__ = 'Justin Pedersen'
-__version__ = '1.2.0'
+__version__ = '2.0.0'
 
 WINDOW_NAME = "Fspy Importer - v{}".format(__version__)
 
@@ -55,10 +55,12 @@ def close_existing_windows():
                 child_window.deleteLater()
 
 
+# noinspection PyAttributeOutsideInit
 class FSpyImporter(QtWidgets.QDialog):
     """
     Main UI Class for the importer
     """
+
     def __init__(self, parent=maya_main_window()):
         super(FSpyImporter, self).__init__(parent)
 
@@ -71,22 +73,22 @@ class FSpyImporter(QtWidgets.QDialog):
         self.create_connections()
 
     def create_widgets(self):
-        self.json_lineedit = QtWidgets.QLineEdit()
-        self.json_btn = QtWidgets.QPushButton("JSON")
-        self.image_lineedit = QtWidgets.QLineEdit()
+        self.fspy_project_line_edit = QtWidgets.QLineEdit()
+        self.f_spy_project = QtWidgets.QPushButton("fSpy Project")
+        self.image_line_edit = QtWidgets.QLineEdit()
         self.image_btn = QtWidgets.QPushButton("Image")
         self.import_btn = QtWidgets.QPushButton("Import")
 
-        self.json_btn.setFixedHeight(20)
-        self.json_lineedit.setFixedHeight(20)
+        self.f_spy_project.setFixedHeight(20)
+        self.fspy_project_line_edit.setFixedHeight(20)
         self.image_btn.setFixedHeight(20)
-        self.image_lineedit.setFixedHeight(20)
+        self.image_line_edit.setFixedHeight(20)
         self.import_btn.setMinimumHeight(40)
 
     def create_layouts(self):
         form_layout = QtWidgets.QFormLayout()
-        form_layout.addRow(self.json_btn, self.json_lineedit)
-        form_layout.addRow(self.image_btn, self.image_lineedit)
+        form_layout.addRow(self.f_spy_project, self.fspy_project_line_edit)
+        form_layout.addRow(self.image_btn, self.image_line_edit)
 
         button_layout = QtWidgets.QHBoxLayout()
         button_layout.addWidget(self.import_btn)
@@ -97,8 +99,14 @@ class FSpyImporter(QtWidgets.QDialog):
         main_layout.addLayout(button_layout)
 
     def create_connections(self):
-        self.json_btn.clicked.connect(partial(self.set_line_edit, self.json_lineedit, 'Import Json'))
-        self.image_btn.clicked.connect(partial(self.set_line_edit, self.image_lineedit, 'Import Image'))
+        self.f_spy_project.clicked.connect(
+            partial(self.set_line_edit,
+                    self.fspy_project_line_edit,
+                    'Import fSpy Project'))
+        self.image_btn.clicked.connect(
+            partial(self.set_line_edit,
+                    self.image_line_edit,
+                    'Import Image'))
         self.import_btn.clicked.connect(self.generate_camera)
 
     def set_line_edit(self, line_edit, caption):
@@ -108,14 +116,14 @@ class FSpyImporter(QtWidgets.QDialog):
         :param str caption: The window caption.
         """
         # Setting up the dialog filters to only accept what is expected in that field to prevent user error.
-        if line_edit == self.json_lineedit:
-            file_filter = '*.json'
+        if line_edit == self.fspy_project_line_edit:
+            file_filter = '*.fspy'
         else:
             all_image_formats = ['psd', 'als', 'avi', 'dds', 'gif', 'jpg', 'cin', 'iff', 'exr',
                                  'png', 'eps', 'yuv', 'hdr', 'tga', 'tif', 'tim', 'bmp', 'xpm']
             file_filter = 'All Image Files (*.{})'.format(' *.'.join([x for x in all_image_formats]))
 
-        filename = pm.fileDialog2(fileMode=1, caption=caption, fileFilter=file_filter)
+        filename = cmds.fileDialog2(fileMode=1, caption=caption, fileFilter=file_filter)
         if filename:
             line_edit.setText(filename[0])
 
@@ -123,14 +131,14 @@ class FSpyImporter(QtWidgets.QDialog):
         """
         Main function to generate the camera and image plane from UI.
         """
-        # Making sure no one put a .json file in the JSON field
-        if os.path.splitext(self.json_lineedit.text())[-1].lower() != '.json':
-            return pm.warning('The JSON field only accepts .json file formats')
+        # Making sure no one put a the wrong file type in the field
+        if os.path.splitext(self.fspy_project_line_edit.text())[-1].lower() != '.fspy':
+            return cmds.warning('The fSpy Project field only accepts .fspy file formats')
 
-        if self.json_lineedit and self.image_lineedit:
-            create_camera_and_plane(self.json_lineedit.text(), self.image_lineedit.text())
+        if self.fspy_project_line_edit and self.image_line_edit:
+            create_camera_and_plane(self.fspy_project_line_edit.text(), self.image_line_edit.text())
         else:
-            pm.warning('Please set a JSON and image path.')
+            cmds.warning('Please set a fSpy Project and image path.')
 
 
 def maya_fspy_ui():
